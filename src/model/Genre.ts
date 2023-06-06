@@ -1,10 +1,13 @@
-import { model, Schema } from 'mongoose';
+import { Document, model, Schema } from 'mongoose';
 import { Joi } from 'utils/validation';
 
 export type Genre = {
   _id: string;
   name: string;
 };
+
+export type GenreDocument = Document<unknown, {}, Genre> &
+  Omit<Genre & Required<{ _id: string }>, never>;
 
 export type RequestGenre = Omit<Genre, '_id'>;
 

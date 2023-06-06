@@ -1,4 +1,4 @@
-import { server } from '..';
+import { server } from 'index';
 import request from 'supertest';
 import { User } from 'model';
 

@@ -28,7 +28,7 @@ router.post(
 
 router.put(
   '/:id',
-  SecurityHandler,
+  [ValidationHandler, SecurityHandler],
   async (req: Request<RequestGenre>, res: Response<Genre | string>) => {
     const { error } = validateGenre(req.body);
     if (error) return res.status(400).send(error.details[0].message);
@@ -48,7 +48,7 @@ router.put(
 
 router.delete(
   '/:id',
-  [SecurityHandler, RoleHandler],
+  [ValidationHandler, SecurityHandler, RoleHandler],
   async (req: Request<Genre>, res: Response<RequestGenre | string>) => {
     const genre = await Genre.findByIdAndRemove(req.params.id);
     if (!genre)
