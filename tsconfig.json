@@ -93,8 +93,8 @@
     /* Disallow inconsistently-cased references to the same file. */
   },
   "include": [
-    "./src//*.ts",
-    "./types//*.d.ts"
+    "./src/**/*.ts",
+    "./types/**/*.d.ts"
   ],
   "ts-node": {
     "require": [

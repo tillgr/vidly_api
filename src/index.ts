@@ -5,10 +5,10 @@ import morgan from 'morgan';
 import { router } from 'router';
 
 import { ErrorHandler } from 'handler';
-import process from 'process';
 import database from 'utils/database';
 import config from 'utils/config';
 import { logger } from 'utils/logging';
+import process from 'process';
 
 const app = express();
 app.set('view engine', 'pug');
@@ -27,4 +27,6 @@ config.init();
 app.use(ErrorHandler);
 
 const port = process.env.PORT || 3000;
-export const server = app.listen(port, () => logger.info(`Listening on port ${port}...`));
+export const server = app.listen(port, () =>
+  logger.info(`Listening on port ${port}...`)
+);

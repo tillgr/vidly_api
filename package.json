@@ -7,7 +7,7 @@
     "start": "nodemon src/index.ts",
     "start:db": "mongod",
     "test": "jest --runInBand -c jest.config.js",
-    "test:watch": "jest --watch --verbose jest.config.js",
+    "test:watch": "jest --watch --verbose --runInBand jest.config.js",
     "test:unit": "jest -c jest.config.unit.js",
     "test:e2e": "jest --runInBand -c jest.config.e2e.js",
     "seed": "ts-node seed.ts"
