@@ -1,12 +1,12 @@
 import express, { Response } from 'express';
 import { Genre, Request, RequestGenre, validateGenre } from 'model';
 import { RoleHandler, SecurityHandler } from 'handler';
+import mongoose from 'mongoose';
+import { ValidationHandler } from 'handler/ValidationHandler';
 
 export const router = express.Router();
 
 router.get('/', async (_req: Request, res: Response<Genre[]>) => {
-  // logger.error(new Error('Could not get the genres.'));
-  throw new Error('Could not get the genres.');
   const genres = await Genre.find<Genre>().sort('name');
   res.send(genres as Genre[]);
 });
@@ -60,7 +60,10 @@ router.delete(
 
 router.get(
   '/:id',
+  ValidationHandler,
   async (req: Request<RequestGenre>, res: Response<Genre | string>) => {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id))
+      return res.status(404).send('Invalid ID.');
     const genre = await Genre.findById(req.params.id);
     if (!genre)
       return res.status(404).send('The genre with the given ID was not found!');

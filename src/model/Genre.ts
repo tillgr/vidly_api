@@ -21,7 +21,7 @@ export const Genre = model<Genre>('Genre', genreSchema);
 
 export const validateGenre = (genre: RequestGenre) => {
   const schema = Joi.object<RequestGenre>({
-    name: Joi.string().min(3).required(),
+    name: Joi.string().min(5).max(50).required(),
   });
   return schema.validate(genre);
 };

@@ -6,10 +6,10 @@ import { logger } from './logging';
 const DB_PATH: string = config.get('db');
 
 const connect = () => {
-  mongoose.connect(DB_PATH).then(() => logger.info('Connected to MongoDB...'));
+  mongoose.connect(DB_PATH).then(() => logger.info(`Connected to ${DB_PATH}...`));
   Fawn.init(DB_PATH);
 };
 
 export default {
-  connect,
+  connect
 };
