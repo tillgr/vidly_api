@@ -1,4 +1,5 @@
 import express from 'express';
+import 'express-async-errors';
 import { router as GenresRouter } from 'router/GenresRouter';
 import { router as HomeRouter } from 'router/HomeRouter';
 import { router as CustomersRouter } from 'router/CustomersRouter';

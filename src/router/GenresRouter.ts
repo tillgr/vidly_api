@@ -1,15 +1,19 @@
 import express, { Response } from 'express';
 import { Genre, Request, RequestGenre, validateGenre } from 'model';
+import { RoleHandler, SecurityHandler } from 'handler';
 
 export const router = express.Router();
 
 router.get('/', async (_req: Request, res: Response<Genre[]>) => {
+  // logger.error(new Error('Could not get the genres.'));
+  throw new Error('Could not get the genres.');
   const genres = await Genre.find<Genre>().sort('name');
   res.send(genres as Genre[]);
 });
 
 router.post(
   '/',
+  SecurityHandler,
   async (req: Request<RequestGenre>, res: Response<Genre | string>) => {
     const { error } = validateGenre(req.body);
     if (error) return res.status(400).send(error.details[0].message);
@@ -24,6 +28,7 @@ router.post(
 
 router.put(
   '/:id',
+  SecurityHandler,
   async (req: Request<RequestGenre>, res: Response<Genre | string>) => {
     const { error } = validateGenre(req.body);
     if (error) return res.status(400).send(error.details[0].message);
@@ -43,6 +48,7 @@ router.put(
 
 router.delete(
   '/:id',
+  [SecurityHandler, RoleHandler],
   async (req: Request<Genre>, res: Response<RequestGenre | string>) => {
     const genre = await Genre.findByIdAndRemove(req.params.id);
     if (!genre)

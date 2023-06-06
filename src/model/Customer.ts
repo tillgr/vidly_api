@@ -10,6 +10,7 @@ export type Customer = {
 };
 
 export type RequestCustomer = Omit<Customer, '_id'>;
+
 export const Customer = model<Customer>(
   'Customer',
   new Schema<Customer>({

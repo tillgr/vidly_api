@@ -1,5 +1,6 @@
 import express, { Response } from 'express';
 import { Genre, Movie, Request, RequestMovie, validateMovie } from 'model';
+import { SecurityHandler } from 'handler';
 
 export const router = express.Router();
 
@@ -10,6 +11,7 @@ router.get('/', async (_req: Request, res: Response<Movie[]>) => {
 
 router.post(
   '/',
+  SecurityHandler,
   async (req: Request<RequestMovie>, res: Response<Movie | string>) => {
     const { error } = validateMovie(req.body);
     if (error) return res.status(400).send(error.details[0].message);
@@ -37,6 +39,7 @@ router.post(
 
 router.put(
   '/:id',
+  SecurityHandler,
   async (req: Request<RequestMovie>, res: Response<Movie | string>) => {
     const { error } = validateMovie(req.body);
     if (error) return res.status(400).send(error.details[0].message);
@@ -69,6 +72,7 @@ router.put(
 
 router.delete(
   '/:id',
+  SecurityHandler,
   async (req: Request<Movie>, res: Response<Movie | string>) => {
     const movie = await Movie.findByIdAndRemove(req.params.id);
     if (!movie)

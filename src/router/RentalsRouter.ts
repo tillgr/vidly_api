@@ -8,6 +8,7 @@ import {
   validateRental,
 } from 'model';
 import Fawn from 'fawn';
+import { SecurityHandler } from 'handler';
 
 export const router = express.Router();
 
@@ -18,6 +19,7 @@ router.get('/', async (_req: Request, res: Response<Rental[]>) => {
 
 router.post(
   '/',
+  SecurityHandler,
   async (req: Request<RequestRental>, res: Response<Rental | string>) => {
     const { error } = validateRental(req.body);
     if (error) return res.status(400).send(error.details[0].message);

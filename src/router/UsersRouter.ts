@@ -1,9 +1,17 @@
 import express, { Response } from 'express';
 import { Request, RequestUser, ResponseUser, User, validateUser } from 'model';
 import bcrypt from 'bcrypt';
+import { SecurityHandler } from 'handler';
 
 export const router = express.Router();
 
+router.get(
+  '/me',
+  SecurityHandler,
+  async (req: Request, res: Response<ResponseUser>) => {
+    res.send((await User.findById(req.user).select('-password'))!);
+  }
+);
 router.post(
   '/',
   async (req: Request<RequestUser>, res: Response<ResponseUser | string>) => {
@@ -20,6 +28,9 @@ router.post(
     user.password = await bcrypt.hash(password, salt);
     await user.save();
 
-    return res.send({ _id: user._id, name, email } as ResponseUser);
+    const token = user.generateAuthToken();
+    return res
+      .header('x-auth-token', token)
+      .send({ _id: user._id, name, email } as ResponseUser);
   }
 );

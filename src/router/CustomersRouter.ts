@@ -1,5 +1,6 @@
 import express, { Response } from 'express';
 import { Customer, Request, RequestCustomer, validateCustomer } from 'model';
+import { SecurityHandler } from 'handler';
 
 export const router = express.Router();
 
@@ -10,6 +11,7 @@ router.get('/', async (_req: Request, res: Response<Customer[]>) => {
 
 router.post(
   '/',
+  SecurityHandler,
   async (req: Request<RequestCustomer>, res: Response<Customer | string>) => {
     const { error } = validateCustomer(req.body);
     if (error) return res.status(400).send(error.details[0].message);
@@ -28,6 +30,7 @@ router.post(
 
 router.put(
   '/:id',
+  SecurityHandler,
   async (req: Request<RequestCustomer>, res: Response<Customer | string>) => {
     const { error } = validateCustomer(req.body);
     if (error) return res.status(400).send(error.details[0].message);
@@ -53,6 +56,7 @@ router.put(
 
 router.delete(
   '/:id',
+  SecurityHandler,
   async (req: Request<RequestCustomer>, res: Response<Customer | string>) => {
     const customer = await Customer.findByIdAndRemove(req.params.id);
     if (!customer)
