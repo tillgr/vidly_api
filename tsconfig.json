@@ -95,10 +95,10 @@
   "include": [
     "./src/**/*.ts",
     "./types/**/*.d.ts"
-  ],
-  "ts-node": {
-    "require": [
-      "tsconfig-paths/register"
-    ]
-  }
+  ]
+  //  "ts-node": {
+  //    "require": [
+  //      "tsconfig-paths/register"
+  //    ]
+  //  }
 }

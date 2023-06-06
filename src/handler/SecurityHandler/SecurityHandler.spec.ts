@@ -1,5 +1,5 @@
 import { Request, User } from 'model';
-import { SecurityHandler } from 'handler/SecurityHandler';
+import { SecurityHandler } from 'handler/SecurityHandler/SecurityHandler';
 import { Response } from 'express';
 import mongoose from 'mongoose';
 

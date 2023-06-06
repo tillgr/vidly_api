@@ -2,21 +2,26 @@
 // https://jestjs.io/docs/en/configuration.html
 module.exports = {
   collectCoverage: false,
+  clearMocks: true,
+  resetMocks: true,
   coverageDirectory: '../coverage',
   coverageProvider: 'v8',
   moduleDirectories: ['node_modules', 'src'],
-  coverageReporters: ['json', 'text', 'lcov', 'clover'],
   preset: 'ts-jest',
-  rootDir: './src',
-  setupFiles: ['<rootDir>/setup-tests.ts', 'dotenv/config'],
-  // testEnvironment: "jest-environment-jsdom",
+  setupFilesAfterEnv: ['<rootDir>/src/setup-tests.ts', 'dotenv/config'],
+  moduleFileExtensions: ['ts', 'js'],
   testEnvironment: 'node',
   testEnvironmentOptions: {
     url: 'http://localhost:3031',
   },
-  collectCoverageFrom: ['!**/(*.)+(mock|test|spec).ts'],
-  testMatch: [
-    // "**/__tests__/**/*.[jt]s?(x)",
-    '**/?(*.)+(spec|test).[tj]s?(x)',
+  testPathIgnorePatterns: ['node_modules/'],
+  testMatch: ['**/*.(mock|test|spec).(ts|js)'],
+  modulePaths: ['<rootDir>/src'],
+  collectCoverageFrom: ['src/**/*.ts'],
+  coveragePathIgnorePatterns: ['src/utils/test/*'],
+  coverageReporters: ['text'],
+  watchPlugins: [
+    'jest-watch-typeahead/filename',
+    'jest-watch-typeahead/testname',
   ],
 };
