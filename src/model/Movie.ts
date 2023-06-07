@@ -1,4 +1,4 @@
-import { model, Schema } from 'mongoose';
+import { Document, model, Schema } from 'mongoose';
 import { Genre, genreSchema } from 'model/Genre';
 import { Joi } from 'utils/validation';
 
@@ -9,6 +9,9 @@ export type Movie = {
   numberInStock: number;
   dailyRentalRate: number;
 };
+
+export type MovieDocument = Document<unknown, {}, Movie> &
+  Omit<Movie & Required<{ _id: string }>, never>;
 
 export type RequestMovie = Omit<Movie, 'genre'> & {
   genreId: string;

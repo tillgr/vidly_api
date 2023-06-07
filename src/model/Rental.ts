@@ -1,7 +1,8 @@
-import { model, Schema } from 'mongoose';
+import { Document, model, Schema } from 'mongoose';
 import { Joi } from 'utils/validation';
 
 export type Rental = {
+  _id: string;
   customer: {
     name: string;
     isGold?: boolean;
@@ -15,6 +16,9 @@ export type Rental = {
   dateReturned?: Date;
   rentalFee?: number;
 };
+
+export type RentalDocument = Document<unknown, {}, Rental> &
+  Omit<Rental & Required<{ _id: string }>, never>;
 
 export type RequestRental = {
   customerId: string;

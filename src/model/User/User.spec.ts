@@ -1,4 +1,4 @@
-import { User } from 'model/User';
+import { User } from './User';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 

@@ -1,8 +1,12 @@
 import express, { Response } from 'express';
 import { Genre, Request, RequestGenre, validateGenre } from 'model';
-import { RoleHandler, SecurityHandler } from 'handler';
+import {
+  BodyHandler,
+  ParamHandler,
+  RoleHandler,
+  SecurityHandler,
+} from 'handler';
 import mongoose from 'mongoose';
-import { ValidationHandler } from 'handler/ValidationHandler';
 
 export const router = express.Router();
 
@@ -13,11 +17,8 @@ router.get('/', async (_req: Request, res: Response<Genre[]>) => {
 
 router.post(
   '/',
-  SecurityHandler,
-  async (req: Request<RequestGenre>, res: Response<Genre | string>) => {
-    const { error } = validateGenre(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
-
+  [SecurityHandler, BodyHandler(validateGenre)],
+  async (req: Request<RequestGenre>, res: Response<Genre>) => {
     const { name } = req.body;
     const genre = new Genre({ name });
     await genre.save();
@@ -28,11 +29,8 @@ router.post(
 
 router.put(
   '/:id',
-  [ValidationHandler, SecurityHandler],
+  [ParamHandler, SecurityHandler, BodyHandler(validateGenre)],
   async (req: Request<RequestGenre>, res: Response<Genre | string>) => {
-    const { error } = validateGenre(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
-
     const { name } = req.body;
     const genre = await Genre.findByIdAndUpdate(
       req.params.id,
@@ -48,7 +46,7 @@ router.put(
 
 router.delete(
   '/:id',
-  [ValidationHandler, SecurityHandler, RoleHandler],
+  [ParamHandler, SecurityHandler, RoleHandler],
   async (req: Request<Genre>, res: Response<RequestGenre | string>) => {
     const genre = await Genre.findByIdAndRemove(req.params.id);
     if (!genre)
@@ -60,7 +58,7 @@ router.delete(
 
 router.get(
   '/:id',
-  ValidationHandler,
+  ParamHandler,
   async (req: Request<RequestGenre>, res: Response<Genre | string>) => {
     if (!mongoose.Types.ObjectId.isValid(req.params.id))
       return res.status(404).send('Invalid ID.');

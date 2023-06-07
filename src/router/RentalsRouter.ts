@@ -8,7 +8,7 @@ import {
   validateRental,
 } from 'model';
 import Fawn from 'fawn';
-import { SecurityHandler } from 'handler';
+import { BodyHandler, SecurityHandler } from 'handler';
 
 export const router = express.Router();
 
@@ -19,13 +19,9 @@ router.get('/', async (_req: Request, res: Response<Rental[]>) => {
 
 router.post(
   '/',
-  SecurityHandler,
+  [SecurityHandler, BodyHandler(validateRental)],
   async (req: Request<RequestRental>, res: Response<Rental | string>) => {
-    const { error } = validateRental(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
-
     const { customerId, movieId } = req.body;
-
     const customer = await Customer.findById(customerId);
     if (!customer) return res.status(404).send('Invalid movie.');
     const { name, phone } = customer;

@@ -7,6 +7,7 @@ import { router as MoviesRouter } from 'router/MoviesRouter';
 import { router as RentalsRouter } from 'router/RentalsRouter';
 import { router as UsersRouter } from 'router/UsersRouter';
 import { router as AuthenticationRouter } from 'router/AuthenticationRouter';
+import { router as ReturnsRouter } from 'router/ReturnsRouter';
 
 export const router = express.Router();
 
@@ -17,3 +18,4 @@ router.use('/api/movies', MoviesRouter);
 router.use('/api/rentals', RentalsRouter);
 router.use('/api/users', UsersRouter);
 router.use('/api/auth', AuthenticationRouter);
+router.use('/api/returns', ReturnsRouter);

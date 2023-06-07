@@ -1,6 +1,6 @@
 import express, { Response } from 'express';
 import { Customer, Request, RequestCustomer, validateCustomer } from 'model';
-import { SecurityHandler } from 'handler';
+import { BodyHandler, ParamHandler, SecurityHandler } from 'handler';
 
 export const router = express.Router();
 
@@ -11,11 +11,8 @@ router.get('/', async (_req: Request, res: Response<Customer[]>) => {
 
 router.post(
   '/',
-  SecurityHandler,
-  async (req: Request<RequestCustomer>, res: Response<Customer | string>) => {
-    const { error } = validateCustomer(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
-
+  [SecurityHandler, BodyHandler(validateCustomer)],
+  async (req: Request<RequestCustomer>, res: Response<Customer>) => {
     const { name, phone, isGold } = req.body;
     const customer = new Customer({
       name,
@@ -30,11 +27,8 @@ router.post(
 
 router.put(
   '/:id',
-  SecurityHandler,
+  [ParamHandler, SecurityHandler, BodyHandler(validateCustomer)],
   async (req: Request<RequestCustomer>, res: Response<Customer | string>) => {
-    const { error } = validateCustomer(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
-
     const { name, phone, isGold } = req.body;
     const customer = await Customer.findByIdAndUpdate(
       req.params.id,
@@ -56,7 +50,7 @@ router.put(
 
 router.delete(
   '/:id',
-  SecurityHandler,
+  [ParamHandler, SecurityHandler],
   async (req: Request<RequestCustomer>, res: Response<Customer | string>) => {
     const customer = await Customer.findByIdAndRemove(req.params.id);
     if (!customer)
@@ -70,6 +64,7 @@ router.delete(
 
 router.get(
   '/:id',
+  ParamHandler,
   async (req: Request<RequestCustomer>, res: Response<Customer | string>) => {
     const customer = await Customer.findById(req.params.id);
     if (!customer)

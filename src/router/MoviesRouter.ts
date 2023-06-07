@@ -1,6 +1,6 @@
 import express, { Response } from 'express';
 import { Genre, Movie, Request, RequestMovie, validateMovie } from 'model';
-import { SecurityHandler } from 'handler';
+import { BodyHandler, ParamHandler, SecurityHandler } from 'handler';
 
 export const router = express.Router();
 
@@ -11,11 +11,8 @@ router.get('/', async (_req: Request, res: Response<Movie[]>) => {
 
 router.post(
   '/',
-  SecurityHandler,
+  [SecurityHandler, BodyHandler(validateMovie)],
   async (req: Request<RequestMovie>, res: Response<Movie | string>) => {
-    const { error } = validateMovie(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
-
     const { title, genreId, numberInStock, dailyRentalRate } = req.body;
     const genre = await Genre.findById(genreId);
     if (!genre)
@@ -37,13 +34,22 @@ router.post(
   }
 );
 
+router.get(
+  '/:id',
+  ParamHandler,
+  async (req: Request<Movie>, res: Response<Movie | string>) => {
+    const movie = await Movie.findById(req.params.id);
+    if (!movie)
+      return res.status(404).send('The movie with the given ID was not found!');
+
+    return res.send(movie as Movie);
+  }
+);
+
 router.put(
   '/:id',
-  SecurityHandler,
+  [ParamHandler, SecurityHandler, BodyHandler(validateMovie)],
   async (req: Request<RequestMovie>, res: Response<Movie | string>) => {
-    const { error } = validateMovie(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
-
     const { title, genreId, numberInStock, dailyRentalRate } = req.body;
     const genre = await Genre.findById(genreId);
     if (!genre)
@@ -54,10 +60,7 @@ router.put(
       req.params.id,
       {
         title,
-        genre: {
-          _id,
-          name,
-        },
+        genre: { _id, name },
         numberInStock,
         dailyRentalRate,
       },
@@ -72,20 +75,9 @@ router.put(
 
 router.delete(
   '/:id',
-  SecurityHandler,
+  [ParamHandler, SecurityHandler],
   async (req: Request<Movie>, res: Response<Movie | string>) => {
     const movie = await Movie.findByIdAndRemove(req.params.id);
-    if (!movie)
-      return res.status(404).send('The movie with the given ID was not found!');
-
-    return res.send(movie as Movie);
-  }
-);
-
-router.get(
-  '/:id',
-  async (req: Request<Movie>, res: Response<Movie | string>) => {
-    const movie = await Movie.findById(req.params.id);
     if (!movie)
       return res.status(404).send('The movie with the given ID was not found!');
 

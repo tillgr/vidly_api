@@ -2,7 +2,7 @@ import { Request } from 'model';
 import { NextFunction, Response } from 'express';
 import mongoose from 'mongoose';
 
-export const ValidationHandler = (
+export const ParamHandler = (
   req: Request,
   res: Response,
   next: NextFunction

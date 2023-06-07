@@ -1,7 +1,7 @@
 import express, { Response } from 'express';
 import { Request, RequestUser, ResponseUser, User, validateUser } from 'model';
 import bcrypt from 'bcrypt';
-import { SecurityHandler } from 'handler';
+import { BodyHandler, SecurityHandler } from 'handler';
 
 export const router = express.Router();
 
@@ -14,10 +14,8 @@ router.get(
 );
 router.post(
   '/',
+  [SecurityHandler, BodyHandler(validateUser)],
   async (req: Request<RequestUser>, res: Response<ResponseUser | string>) => {
-    const { error } = validateUser(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
-
     let user = await User.findOne({ email: req.body.email });
     if (user) return res.status(400).send('User already registered');
 
